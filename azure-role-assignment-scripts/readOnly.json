@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "actions": {
+      "type": "array",
+      "defaultValue": [
+        "Microsoft.Resources/subscriptions/resourceGroups/read",
+        "Microsoft.Compute/virtualMachines/read",
+        "Microsoft.Compute/virtualMachines/instanceView/read",
+        "Microsoft.Compute/disks/read",
+        "Microsoft.Compute/availabilitySets/read",
+        "Microsoft.Compute/snapshots/read",
+        "Microsoft.Network/virtualNetworks/read",
+        "Microsoft.Network/loadBalancers/read",
+        "Microsoft.Network/networkInterfaces/read",
+        "Microsoft.Network/publicIPAddresses/read",
+        "Microsoft.Network/routeTables/read",
+        "Microsoft.Network/networkSecurityGroups/read",
+        "Microsoft.Network/virtualNetworks/subnets/read",
+        "Microsoft.DBforMariaDB/servers/read",
+        "Microsoft.DBforPostgreSQL/servers/read",
+        "Microsoft.Sql/servers/read",
+        "Microsoft.Sql/servers/databases/read",
+        "Microsoft.Sql/servers/elasticPools/read",
+        "Microsoft.DBforMySQL/servers/read",
+        "Microsoft.Storage/storageAccounts/read",
+        "Microsoft.Insights/metrics/read",
+        "Microsoft.Insights/metricDefinitions/read",
+        "Microsoft.Commerce/*/read",
+        "Microsoft.Cache/redis/read",
+        "Microsoft.DocumentDB/databaseAccounts/services/read",
+        "Microsoft.Web/staticSites/Read",
+        "Microsoft.Web/kubeEnvironments/read",
+        "Microsoft.Kubernetes/connectedClusters/Read",
+        "Microsoft.Kubernetes/RegisteredSubscriptions/read",
+        "Microsoft.DataProtection/backupVaults/read",
+        "Microsoft.DocumentDB/cassandraClusters/read",
+        "Microsoft.DocumentDB/cassandraClusters/dataCenters/read",
+        "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/read",
+        "Microsoft.DesktopVirtualization/applicationgroups/read",
+        "Microsoft.DesktopVirtualization/hostpools/read",
+        "Microsoft.DesktopVirtualization/workspaces/read",
+        "Microsoft.Advisor/recommendations/read",
+        "Microsoft.Consumption/reservationRecommendations/read",
+        "Microsoft.Consumption/reservationRecommendationDetails/read",
+        "Microsoft.Web/sites/read",
+        "Microsoft.Web/serverfarms/read",
+        "Microsoft.ContainerService/managedClusters/read"
+      ],
+      "metadata": {
+        "description": "Array of actions for the roleDefinition"
+      }
+    },
+    "notActions": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of notActions for the roleDefinition"
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "defaultValue": "Custom Role",
+      "metadata": {
+        "description": "Friendly name of the role definition"
+      }
+    },
+    "roleDescription": {
+      "type": "string",
+      "defaultValue": "Subscription Level Deployment of a Role Definition",
+      "metadata": {
+        "description": "Detailed description of the role definition"
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of notActions for the roleDefinition"
+      }
+    },
+  },
+  "variables": {
+    "roleDefName": "[guid(subscription().id, string(parameters('actions')), string(parameters('notActions')))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2018-07-01",
+      "name": "[variables('roleDefName')]",
+      "properties": {
+        "roleName": "[parameters('roleName')]",
+        "description": "[parameters('roleDescription')]",
+        "type": "customRole",
+        "isCustom": true,
+        "permissions": [
+          {
+            "actions": "[parameters('actions')]",
+            "notActions": "[parameters('notActions')]"
+          }
+        ],
+        "assignableScopes": "[parameters('scopes')]"
+      }
+    }
+  ]
+}
